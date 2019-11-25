@@ -8,8 +8,11 @@ using System.Text;
 using System.IO;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
+using System.Drawing.Imaging;
 using OSGeo.GDAL;
 using OSGeo.OSR;
+using ImageMagick;
+using System.Data.SQLite;
 
 namespace BatchTIFF
 {
@@ -19,6 +22,19 @@ namespace BatchTIFF
         public Form1()
         {
             InitializeComponent();
+        }
+
+        private static ImageCodecInfo GetEncoderInfo(String mimeType)
+        {
+            int j;
+            ImageCodecInfo[] encoders;
+            encoders = ImageCodecInfo.GetImageEncoders();
+            for (j = 0; j < encoders.Length; ++j)
+            {
+                if (encoders[j].MimeType == mimeType)
+                    return encoders[j];
+            }
+            return null;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -53,11 +69,13 @@ namespace BatchTIFF
                 string Y = coords[1];
                 if (checkBox1.Checked)
                 {
-                    X = X.Replace(',', '.');
-                    int X_int = System.Convert.ToInt32(X);
+                    //X = X.Replace(',', '.');
+                    double X_float = System.Convert.ToDouble(X);
+                    int X_int = System.Convert.ToInt32(X_float);
                     X = X_int.ToString() + ".0";
-                    Y = Y.Replace(',', '.');
-                    int Y_int = System.Convert.ToInt32(Y);
+                    //Y = Y.Replace(',', '.');
+                    double Y_float = System.Convert.ToDouble(Y);
+                    int Y_int = System.Convert.ToInt32(Y_float);
                     Y = Y_int.ToString() + ".0";
                 }
                 else
@@ -66,34 +84,19 @@ namespace BatchTIFF
                     Y = Y.Replace(',', '.');
                 }
                 tab_strings.Add("  ("+X+","+Y+ ") (0,0) Label \"Точка 1\",");
-                coords = GDALInfoGetPosition(tiff_image, tiff_image.RasterXSize, 0.0).Split(new string[] { ", " }, StringSplitOptions.None);
-                X = coords[0];
-                Y = coords[1];
-                if (checkBox1.Checked)
-                {
-                    X = X.Replace(',', '.');
-                    int X_int = System.Convert.ToInt32(X);
-                    X = X_int.ToString() + ".0";
-                    Y = Y.Replace(',', '.');
-                    int Y_int = System.Convert.ToInt32(Y);
-                    Y = Y_int.ToString() + ".0";
-                }
-                else
-                {
-                    X = X.Replace(',', '.');
-                    Y = Y.Replace(',', '.');
-                }
-                tab_strings.Add("  ("+ X+","+Y + ") ("+ tiff_image.RasterXSize.ToString()+ ",0) Label \"Точка 2\",");
+
                 coords = GDALInfoGetPosition(tiff_image, 0.0, tiff_image.RasterYSize).Split(new string[] { ", " }, StringSplitOptions.None);
                 X = coords[0];
                 Y = coords[1];
                 if (checkBox1.Checked)
                 {
-                    X = X.Replace(',', '.');
-                    int X_int = System.Convert.ToInt32(X);
+                    //X = X.Replace(',', '.');
+                    double X_float = System.Convert.ToDouble(X);
+                    int X_int = System.Convert.ToInt32(X_float);
                     X = X_int.ToString() + ".0";
-                    Y = Y.Replace(',', '.');
-                    int Y_int = System.Convert.ToInt32(Y);
+                    //Y = Y.Replace(',', '.');
+                    double Y_float = System.Convert.ToDouble(Y);
+                    int Y_int = System.Convert.ToInt32(Y_float);
                     Y = Y_int.ToString() + ".0";
                 }
                 else
@@ -101,7 +104,49 @@ namespace BatchTIFF
                     X = X.Replace(',', '.');
                     Y = Y.Replace(',', '.');
                 }
-                tab_strings.Add("  ("+ X+","+Y + ") (0,"+ tiff_image.RasterYSize.ToString()+ ")  Label \"Точка 3\"");
+                tab_strings.Add("  ("+ X+","+Y + ") (0,"+ tiff_image.RasterYSize.ToString()+ ")  Label \"Точка 2\",");
+
+                coords = GDALInfoGetPosition(tiff_image, tiff_image.RasterXSize, tiff_image.RasterYSize).Split(new string[] { ", " }, StringSplitOptions.None);
+                X = coords[0];
+                Y = coords[1];
+                if (checkBox1.Checked)
+                {
+                    //X = X.Replace(',', '.');
+                    double X_float = System.Convert.ToDouble(X);
+                    int X_int = System.Convert.ToInt32(X_float);
+                    X = X_int.ToString() + ".0";
+                    //Y = Y.Replace(',', '.');
+                    double Y_float = System.Convert.ToDouble(Y);
+                    int Y_int = System.Convert.ToInt32(Y_float);
+                    Y = Y_int.ToString() + ".0";
+                }
+                else
+                {
+                    X = X.Replace(',', '.');
+                    Y = Y.Replace(',', '.');
+                }
+                tab_strings.Add("  (" + X + "," + Y + ") (" + tiff_image.RasterXSize.ToString() + ","+ tiff_image.RasterYSize.ToString()+") Label \"Точка 3\",");
+
+                coords = GDALInfoGetPosition(tiff_image, tiff_image.RasterXSize, 0.0).Split(new string[] { ", " }, StringSplitOptions.None);
+                X = coords[0];
+                Y = coords[1];
+                if (checkBox1.Checked)
+                {
+                    //X = X.Replace(',', '.');
+                    double X_float = System.Convert.ToDouble(X);
+                    int X_int = System.Convert.ToInt32(X_float);
+                    X = X_int.ToString() + ".0";
+                    //Y = Y.Replace(',', '.');
+                    double Y_float = System.Convert.ToDouble(Y);
+                    int Y_int = System.Convert.ToInt32(Y_float);
+                    Y = Y_int.ToString() + ".0";
+                }
+                else
+                {
+                    X = X.Replace(',', '.');
+                    Y = Y.Replace(',', '.');
+                }
+                tab_strings.Add("  (" + X + "," + Y + ") (" + tiff_image.RasterXSize.ToString() + ",0) Label \"Точка 4\"");
                 tab_strings.Add("  CoordSys NonEarth Units \"m\"");
                 tab_strings.Add("  Units \"m\"");
                 //string projection = tiff_image.GetProjectionRef();
@@ -120,7 +165,50 @@ namespace BatchTIFF
                 //    }
                 //}
                 File.WriteAllLines(Path.GetDirectoryName(tiff_file)+"\\"+Path.GetFileNameWithoutExtension(tiff_file) + ".TAB", tab_strings);
+
+                if (checkBox2.Checked)
+                {
+                    using (MagickImage image = new MagickImage(tiff_file))
+                    {
+                        string fullPath = Path.GetDirectoryName(tiff_file).TrimEnd(Path.DirectorySeparatorChar);
+                        string folder_name = fullPath.Split(Path.DirectorySeparatorChar).Last();
+                        if (image.Depth == 1 || folder_name== "Gray_images")
+                        {
+
+                        }
+                        else
+                        {
+                            if (Directory.Exists(Path.GetDirectoryName(tiff_file) + "\\Gray_images"))
+                            {
+
+                            }
+                            else
+                            {
+                                //MessageBox.Show("");
+                                Directory.CreateDirectory(Path.GetDirectoryName(tiff_file) + "\\Gray_images");
+                            }
+                            File.Copy(tiff_file, Path.GetDirectoryName(tiff_file) + "\\Gray_images\\" + Path.GetFileNameWithoutExtension(tiff_file) + "_gray.tif", true);
+                            image.ColorType = ColorType.Bilevel;
+                            image.Quantize(new QuantizeSettings()
+                            {
+                                Colors = 2,
+                                //ColorSpace = ColorSpace.RGB,
+                                DitherMethod = DitherMethod.FloydSteinberg
+                            });
+                            image.Depth = 1;
+                            byte[] result = image.ToByteArray(MagickFormat.Tiff);
+                            File.WriteAllBytes(tiff_file, result);
+                            tab_strings[5] = "  File \"" + Path.GetFileNameWithoutExtension(tiff_file) + "_gray.tif" + "\"";
+                            File.WriteAllLines(Path.GetDirectoryName(tiff_file) + "\\Gray_images\\" + Path.GetFileNameWithoutExtension(tiff_file) + "_gray.TAB", tab_strings);
+                        }
+
+                    }
+                }
+
+
+
             }
+            MessageBox.Show("Обработка завершена");
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -142,6 +230,101 @@ namespace BatchTIFF
             dfGeoY = adfGeoTransform[3] + adfGeoTransform[4] * x + adfGeoTransform[5] * y;
 
             return dfGeoX.ToString() + ", " + dfGeoY.ToString();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            string[] sqlite_files = Directory.GetFiles(folderBrowserDialog1.SelectedPath, "raster_points.sqlite", SearchOption.AllDirectories);
+            int files_count = sqlite_files.Length;
+            List<string> msk_strings;
+            List<string> sk42_strings;
+            foreach (string sqlite_file in sqlite_files)
+            {
+                msk_strings = new List<string>();
+                sk42_strings = new List<string>();
+                string fullPath = Path.GetDirectoryName(sqlite_file).TrimEnd(Path.DirectorySeparatorChar);
+                //MessageBox.Show(fullPath);
+                string settlement = fullPath.Split(Path.DirectorySeparatorChar).Last();
+                //MessageBox.Show(settlement);
+                var con = new SQLiteConnection("Data Source="+sqlite_file);
+                con.Open();
+                string stm = "SELECT * FROM raster_points";
+
+                var cmd = new SQLiteCommand(stm, con);
+                using (SQLiteDataReader rdr = cmd.ExecuteReader())
+                {
+                    msk_strings.Add("Имя_пункта 	X 	Y ");
+                    while (rdr.Read())
+                    {
+                        msk_strings.Add(rdr.GetInt32(0)+"\t"+ rdr.GetDouble(1)+"\t"+ rdr.GetDouble(2));
+                        //MessageBox.Show($"{rdr.GetInt32(0)} {rdr.GetDouble(1)} {rdr.GetDouble(2)}");
+                    }
+                }
+                File.WriteAllLines(Path.GetDirectoryName(sqlite_file) + "\\" + settlement + "_МСК.txt", msk_strings, Encoding.ASCII);
+                con.Close();
+
+                var con_13 = new SQLiteConnection("Data Source=" + Path.GetDirectoryName(sqlite_file) + "\\satellite_points\\sat_pnts_z13.sqlite");
+                con_13.Open();
+                stm = "SELECT * FROM sat_points_zone13";
+                cmd = new SQLiteCommand(stm, con_13);
+                using (SQLiteDataReader rdr = cmd.ExecuteReader())
+                {
+                    if (rdr.HasRows)
+                    {
+                        sk42_strings.Add("Имя_пункта 	X 	Y ");
+                        while (rdr.Read())
+                        {
+                            sk42_strings.Add(rdr.GetInt32(0) + "\t" + rdr.GetDouble(1) + "\t" + rdr.GetDouble(2));
+                            //MessageBox.Show($"{rdr.GetInt32(0)} {rdr.GetDouble(1)} {rdr.GetDouble(2)}");
+                        }
+                        File.WriteAllLines(Path.GetDirectoryName(sqlite_file) + "\\" + settlement + "_СК42-13.txt", sk42_strings, Encoding.ASCII);
+                    }
+
+                }
+                con_13.Close();
+
+                var con_14 = new SQLiteConnection("Data Source=" + Path.GetDirectoryName(sqlite_file) + "\\satellite_points\\sat_pnts_z14.sqlite");
+                con_14.Open();
+                stm = "SELECT * FROM sat_points_zone14";
+                cmd = new SQLiteCommand(stm, con_14);
+                using (SQLiteDataReader rdr = cmd.ExecuteReader())
+                {
+                    if (rdr.HasRows)
+                    {
+                        sk42_strings.Add("Имя_пункта 	X 	Y ");
+                        while (rdr.Read())
+                        {
+                            sk42_strings.Add(rdr.GetInt32(0) + "\t" + rdr.GetDouble(1) + "\t" + rdr.GetDouble(2));
+                            //MessageBox.Show($"{rdr.GetInt32(0)} {rdr.GetDouble(1)} {rdr.GetDouble(2)}");
+                        }
+                        File.WriteAllLines(Path.GetDirectoryName(sqlite_file) + "\\" + settlement + "_СК42-14.txt", sk42_strings, Encoding.ASCII);
+                    }
+
+                }
+                con_14.Close();
+
+                var con_15 = new SQLiteConnection("Data Source=" + Path.GetDirectoryName(sqlite_file) + "\\satellite_points\\sat_pnts_z15.sqlite");
+                con_15.Open();
+                stm = "SELECT * FROM sat_points_zone15";
+                cmd = new SQLiteCommand(stm, con_15);
+                using (SQLiteDataReader rdr = cmd.ExecuteReader())
+                {
+                    if (rdr.HasRows)
+                    {
+                        sk42_strings.Add("Имя_пункта 	X 	Y ");
+                        while (rdr.Read())
+                        {
+                            sk42_strings.Add(rdr.GetInt32(0) + "\t" + rdr.GetDouble(1) + "\t" + rdr.GetDouble(2));
+                            //MessageBox.Show($"{rdr.GetInt32(0)} {rdr.GetDouble(1)} {rdr.GetDouble(2)}");
+                        }
+                        File.WriteAllLines(Path.GetDirectoryName(sqlite_file) + "\\" + settlement + "_СК42-15.txt", sk42_strings, Encoding.ASCII);
+                    }
+
+                }
+                con_15.Close();
+            }
+            MessageBox.Show("Создание файлов завершено");
+
         }
     }
 
