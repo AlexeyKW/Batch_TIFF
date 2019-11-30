@@ -4,7 +4,6 @@ C:\Users\Alexey\Documents\Visual Studio 2017\Projects\BatchTIFF\BatchTIFF\bin\De
 C:\Users\Alexey\Documents\Visual Studio 2017\Projects\BatchTIFF\BatchTIFF\bin\Debug\gdal_csharp.dll
 C:\Users\Alexey\Documents\Visual Studio 2017\Projects\BatchTIFF\BatchTIFF\bin\Debug\ogr_csharp.dll
 C:\Users\Alexey\Documents\Visual Studio 2017\Projects\BatchTIFF\BatchTIFF\bin\Debug\osr_csharp.dll
-C:\Users\Alexey\Documents\Visual Studio 2017\Projects\BatchTIFF\BatchTIFF\obj\Debug\BatchTIFF.Form1.resources
 C:\Users\Alexey\Documents\Visual Studio 2017\Projects\BatchTIFF\BatchTIFF\obj\Debug\BatchTIFF.Properties.Resources.resources
 C:\Users\Alexey\Documents\Visual Studio 2017\Projects\BatchTIFF\BatchTIFF\obj\Debug\BatchTIFF.csproj.GenerateResource.cache
 C:\Users\Alexey\Documents\Visual Studio 2017\Projects\BatchTIFF\BatchTIFF\obj\Debug\BatchTIFF.csproj.CoreCompileInputs.cache
@@ -52,3 +51,8 @@ C:\Users\a.a.kolesnikov\Documents\Visual Studio 2017\Projects\BatchTIFF\BatchTIF
 C:\Users\a.a.kolesnikov\Documents\Visual Studio 2017\Projects\BatchTIFF\BatchTIFF\obj\Debug\BatchTIFF.csproj.CopyComplete
 C:\Users\a.a.kolesnikov\Documents\Visual Studio 2017\Projects\BatchTIFF\BatchTIFF\obj\Debug\BatchTIFF.exe
 C:\Users\a.a.kolesnikov\Documents\Visual Studio 2017\Projects\BatchTIFF\BatchTIFF\obj\Debug\BatchTIFF.pdb
+C:\Users\Alexey\Documents\Visual Studio 2017\Projects\BatchTIFF\BatchTIFF\bin\Debug\MathNet.Numerics.dll
+C:\Users\Alexey\Documents\Visual Studio 2017\Projects\BatchTIFF\BatchTIFF\bin\Debug\MathNet.Numerics.xml
+C:\Users\Alexey\Documents\Visual Studio 2017\Projects\BatchTIFF\BatchTIFF\obj\Debug\BatchTIFF.Form1.resources
+C:\Users\a.a.kolesnikov\Documents\Visual Studio 2017\Projects\BatchTIFF\BatchTIFF\bin\Debug\MathNet.Numerics.dll
+C:\Users\a.a.kolesnikov\Documents\Visual Studio 2017\Projects\BatchTIFF\BatchTIFF\bin\Debug\MathNet.Numerics.xml
